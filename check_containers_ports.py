@@ -1,6 +1,7 @@
 import socket
 import time
 import docker
+from AI_Integration.Analysis import determine_required_value 
 
 def check_port(host, port):
     """Check if a specific port is open on a host."""
@@ -71,7 +72,8 @@ if __name__ == "__main__":
     ports = [3001, 3002, 3003]  # List of ports to map on the host
     container_ids = ["54518e8108cd", "c0f413718a93", "40fc34ff1732"]  # Replace with your container IDs
     image_name = "webopti-1"  # Replace with your Docker image name
-    desired_count = 1  # Desired number of running containers
-
+    desired_count = determine_required_value()  # Desired number of running containers
+    print(desired_count)
     print(f"Monitoring ports on {host}: {ports}")
     monitor_ports_and_manage_containers(host, ports, container_ids, image_name, desired_count)
+

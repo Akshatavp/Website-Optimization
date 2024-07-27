@@ -1,1 +1,5 @@
 docker exec -it desktop-kafka-1 /usr/bin/kafka-topics --create --topic registration-topic --bootstrap-server localhost:9092 --partitions 3 --replication-factor 1
+
+
+
+docker run -d -p 3003:3000 --name web-app-3 webopti-1

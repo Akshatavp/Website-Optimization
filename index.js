@@ -1,6 +1,7 @@
 const express = require("express");
 const sendMessage = require("./producer");
 const app = express();
+const path = require("path");
 const port = 3000;
 
 app.use(express.json());
@@ -18,9 +19,7 @@ app.post("/register", (req, res) => {
 
 app.get("/", (req, res) => {
   requestCount++;
-  res.json({
-    message: "I am Alive",
-  });
+  res.sendFile(path.join(__dirname, "client", "index.html"));
 });
 
 // Periodically log the request rate
