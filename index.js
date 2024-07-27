@@ -12,7 +12,7 @@ let startTime = Date.now();
 app.post("/register", (req, res) => {
   requestCount++;
   const registrationData = req.body;
-  sendMessage(registrationData);
+  // sendMessage(registrationData);
   res.status(202).send("Registration request received.");
 });
 

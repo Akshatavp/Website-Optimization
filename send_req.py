@@ -4,7 +4,7 @@ import time
 
 # Define the API endpoint
 API_REGISTER_ENDPOINT = 'http://localhost:3000/register'
-API_ENDPOINT = 'http://localhost:3000/'
+API_ENDPOINT = 'http://localhost:8070/'
 
 # Define the number of requests per second
 REQUESTS_PER_SECOND = 50000  # Change this value to adjust requests per second

@@ -6,7 +6,7 @@ import datetime
 import pytz
 import numpy as np
 # Load the dataset
-file_path = 'D:/Website_Optimization/server_requests_july_2023.xlsx'
+file_path = 'D:/test Application/Python/Website-Optimization-Using-AI/AI-Integration/server_requests_july_2023.xlsx'
 data = pd.read_excel(file_path)
 
 # Convert Date column to string before combining
@@ -64,6 +64,8 @@ future_predictions = model.predict(future_features)
 # Print the predictions with the corresponding datetime
 for time, prediction in zip(future_times, future_predictions):
     print(f'Datetime: {time}, Predicted Number of Requests: {prediction}')
+
+
 
 
 
