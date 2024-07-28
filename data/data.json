@@ -1,0 +1,68 @@
+[
+    {
+      "image": "https://images-cdn.ubuy.co.in/64c26fec557de751714a94c6-msi-gl63-gaming-laptop-15-6-intel-core.jpg",
+      "alt": "Gaming Laptop",
+      "title": "Gaming Laptop",
+      "description": "High-performance gaming laptop with a powerful graphics card and fast processor.",
+      "price": "$999.99",
+      "button": {
+        "text": "Buy Now",
+        "link": "#"
+      }
+    },
+    {
+      "image": "https://store.storeimages.cdn-apple.com/4668/as-images.apple.com/is/MY582?wid=1144&hei=1144&fmt=jpeg&qlt=95&.v=1604515400000",
+      "alt": "Wireless Headphones",
+      "title": "Wireless Headphones",
+      "description": "Noise-cancelling wireless headphones with long battery life and superior sound quality.",
+      "price": "$199.99",
+      "button": {
+        "text": "Buy Now",
+        "link": "#"
+      }
+    },
+    {
+      "image": "https://rukminim2.flixcart.com/image/850/1000/xif0q/smartwatch/2/g/r/48-watch-ultra-orange-android-ios-mobirite-yes-original-imagk4cxc4chmxgc.jpeg?q=90&crop=false",
+      "alt": "Smartwatch",
+      "title": "Smartwatch",
+      "description": "Stylish smartwatch with fitness tracking and customizable watch faces.",
+      "price": "$149.99",
+      "button": {
+        "text": "Buy Now",
+        "link": "#"
+      }
+    },
+    {
+      "image": "https://media-ik.croma.com/prod/https://media.croma.com/image/upload/v1684555260/Croma%20Assets/Entertainment/Speakers%20and%20Media%20Players/Images/273215_cfcpik.png?tr=w-600",
+      "alt": "Bluetooth Speaker",
+      "title": "Bluetooth Speaker",
+      "description": "Portable Bluetooth speaker with rich bass and clear sound, perfect for parties.",
+      "price": "$59.99",
+      "button": {
+        "text": "Buy Now",
+        "link": "#"
+      }
+    },
+    {
+      "image": "https://www.reliancedigital.in/wp-content/uploads/2015/09/4k.jpg",
+      "alt": "4K Television",
+      "title": "4K Television",
+      "description": "Ultra HD 4K television with vibrant colors and smart features.",
+      "price": "$799.99",
+      "button": {
+        "text": "Buy Now",
+        "link": "#"
+      }
+    },
+    {
+      "image": "https://imgd.aeplcdn.com/1280x720/n/cw/ec/99475/one-right-front-three-quarter-2.jpeg?isig=0",
+      "alt": "Electric Scooter",
+      "title": "Electric Scooter",
+      "description": "Eco-friendly electric scooter with a long-lasting battery and high speed.",
+      "price": "$499.99",
+      "button": {
+        "text": "Buy Now",
+        "link": "#"
+      }
+    }
+  ]
