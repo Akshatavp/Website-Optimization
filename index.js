@@ -1,5 +1,5 @@
 const express = require("express");
-const sendMessage = require("./producer");
+const sendMessage = require("./kafka/producer");
 const app = express();
 const path = require("path");
 const port = 3000;

@@ -1,231 +1,67 @@
 import pandas as pd
-from sklearn.model_selection import train_test_split
-from sklearn.linear_model import LinearRegression
-from sklearn.metrics import mean_squared_error
-import datetime
-import pytz
 import numpy as np
+from sklearn.ensemble import RandomForestRegressor
+import datetime
 
-def determine_required_value():
+def predict_traffic_average(file_path: str) -> float:
+    """
+    Predict the average number of requests for the next 10 minutes based on synthetic traffic data.
 
-    file_path = 'D:/test Application/Python/Website-Optimization-Using-AI/AI_Integration/server_requests_27_july_2023.xlsx'
+    Returns:
+    - float: The average predicted number of requests for the next 10 minutes.
+    """
 
-    # Load the dataset
-    data = pd.read_excel(file_path)
+    # Load the generated synthetic data
+    # file_path = 'synthetic_traffic_data.csv'  # Hardcoded path to the data file
+    traffic_data = pd.read_csv(file_path)
 
-    # Convert Date column to string before combining
-    data['Date'] = data['Date'].astype(str)
+    # Convert the 'Datetime' column to datetime object if it's not already
+    traffic_data['Datetime'] = pd.to_datetime(traffic_data['Datetime'])
 
-    # Combine Date and Time columns into a single datetime column
-    data['Datetime'] = pd.to_datetime(data['Date'] + ' ' + data['Time'])
+    # Enhance Feature Set
+    traffic_data['Minute'] = traffic_data['Datetime'].dt.minute
+    traffic_data['Hour'] = traffic_data['Datetime'].dt.hour
+    traffic_data['DayOfWeek'] = traffic_data['Datetime'].dt.dayofweek
+    traffic_data['IsWeekend'] = traffic_data['DayOfWeek'].apply(lambda x: 1 if x >= 5 else 0)
+    traffic_data['Lag1'] = traffic_data['Traffic'].shift(1).fillna(0)  # Traffic from the previous minute
 
-    # Set the datetime column as the index
-    data.set_index('Datetime', inplace=True)
+    # Features and target
+    X = traffic_data[['Minute', 'Hour', 'DayOfWeek', 'IsWeekend', 'Lag1']]
+    y = traffic_data['Traffic']
 
-    # Drop the original Date and Time columns
-    data.drop(columns=['Date', 'Time'], inplace=True)
+    # Train the Random Forest model
+    model = RandomForestRegressor(n_estimators=100, random_state=42)
+    model.fit(X, y)
 
-    # Resample the data to a per-minute frequency, summing the number of requests in each minute
-    data_resampled = data.resample('min').sum().fillna(0)
+    # Make Predictions for the Next 10 Minutes
+    # Define the time range for prediction (next 10 minutes)
+    current_time = datetime.datetime.now()
+    future_times = pd.date_range(start=current_time, periods=10, freq='T')
 
-    # Create features for the model
-    data_resampled['Hour'] = data_resampled.index.hour
-    data_resampled['Minute'] = data_resampled.index.minute
-    data_resampled['DayOfWeek'] = data_resampled.index.dayofweek
-
-    # Split the data into training and testing sets
-    X = data_resampled[['Hour', 'Minute', 'DayOfWeek']]
-    y = data_resampled['Number of Requests']
-
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-
-    # Train a predictive model (Linear Regression)
-    model = LinearRegression()
-    model.fit(X_train, y_train)
-
-    # Calculate Mean Squared Error
-    predictions = model.predict(X_test)
-    mse = mean_squared_error(y_test, predictions)
-    print(f'Mean Squared Error: {mse}')
-
-    # Get the current time in India (IST)
-    india_timezone = pytz.timezone('Asia/Kolkata')
-    current_time_ist = datetime.datetime.now(india_timezone)
-
-    # Generate future timestamps for the next 10 minutes
-    future_times = [current_time_ist + datetime.timedelta(minutes=i) for i in range(1, 11)]
-
-    # Create features for these future timestamps
+    # Create features for future predictions
     future_features = pd.DataFrame({
-        'Hour': [t.hour for t in future_times],
-        'Minute': [t.minute for t in future_times],
-        'DayOfWeek': [t.weekday() for t in future_times]
-    }, index=future_times)
+        'Minute': future_times.minute,
+        'Hour': future_times.hour,
+        'DayOfWeek': future_times.weekday,
+        'IsWeekend': future_times.weekday >= 5,
+        'Lag1': y.iloc[-1]  # Last observed traffic
+    })
 
-    # Make predictions using the trained model
+    # Predict traffic for the next 10 minutes
     future_predictions = model.predict(future_features)
 
-    # Print the predictions with the corresponding datetime
-    for time, prediction in zip(future_times, future_predictions):
-        print(f'Datetime: {time}, Predicted Number of Requests: {prediction}')
+    # Calculate the average predicted traffic
+    average_prediction = np.mean(future_predictions)
 
-    # Calculate the total value
-    total = np.sum(future_predictions) / len(future_predictions)
+    req = 1
+    if average_prediction > 500:
+        req = 2
+    else: 
+        req = 3 
 
-    # Determine the required value based on total
-    if total > 100000:
-        required = 3
-    elif total > 50000:
-        required = 2
-    else:
-        required = 1
+    return req
 
-    print(f"Original required value: {required}")
-    return required
-
-# Example usage
-
-required_value = determine_required_value()
-print(f"The determined required value is: {required_value}")
-
-
-
-# ---------------------------------------------------------------------------------------------------
-
-# import pandas as pd
-# from sklearn.model_selection import train_test_split
-# from sklearn.ensemble import RandomForestRegressor
-# from sklearn.metrics import mean_squared_error
-# import datetime
-# import pytz
-# import numpy as np
-
-# # Load the dataset
-# file_path = 'D:/Website_Optimization/server_requests_july_2023.xlsx'
-# data = pd.read_excel(file_path)
-
-# # Convert Date column to string before combining
-# data['Date'] = data['Date'].astype(str)
-
-# # Combine Date and Time columns into a single datetime column
-# data['Datetime'] = pd.to_datetime(data['Date'] + ' ' + data['Time'])
-
-# # Set the datetime column as the index
-# data.set_index('Datetime', inplace=True)
-
-# # Drop the original Date and Time columns
-# data.drop(columns=['Date', 'Time'], inplace=True)
-
-# # Resample the data to a per-minute frequency, summing the number of requests in each minute
-# data_resampled = data.resample('min').sum().fillna(0)
-
-# # Create features for the model
-# data_resampled['Hour'] = data_resampled.index.hour
-# data_resampled['Minute'] = data_resampled.index.minute
-# data_resampled['DayOfWeek'] = data_resampled.index.dayofweek
-
-# # Split the data into training and testing sets
-# X = data_resampled[['Hour', 'Minute', 'DayOfWeek']]
-# y = data_resampled['Number of Requests']
-
-# X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-
-# # Train a predictive model (e.g., a Random Forest)
-# model = RandomForestRegressor(n_estimators=100, random_state=42)
-# model.fit(X_train, y_train)
-
-# # Calculate Mean Squared Error
-# predictions = model.predict(X_test)
-# mse = mean_squared_error(y_test, predictions)
-# print(f'Mean Squared Error: {mse}')
-
-# # Get the current time in India (IST)
-# india_timezone = pytz.timezone('Asia/Kolkata')
-# current_time_ist = datetime.datetime.now(india_timezone)
-
-# # Generate future timestamps for the next 10 minutes
-# future_times = [current_time_ist + datetime.timedelta(minutes=i) for i in range(1, 11)]
-
-# # Create features for these future timestamps
-# future_features = pd.DataFrame({
-#     'Hour': [t.hour for t in future_times],
-#     'Minute': [t.minute for t in future_times],
-#     'DayOfWeek': [t.weekday() for t in future_times]
-# }, index=future_times)
-
-# # Make predictions using the trained model
-# future_predictions = model.predict(future_features)
-
-# # Print the predictions with the corresponding datetime
-# for time, prediction in zip(future_times, future_predictions):
-#     print(f'Datetime: {time}, Predicted Number of Requests: {prediction}')
-
-
-
-
-
-
-
-
-# ___________________________________________________________________________________________________________________
-
-
-# import pandas as pd
-
-# # Load the dataset
-# file_path = 'D:/Website_Optimization/server_requests_july_2023.xlsx'
-# data = pd.read_excel(file_path)
-
-# # Convert Date column to string before combining
-# data['Date'] = data['Date'].astype(str)
-
-# # Combine Date and Time columns into a single datetime column
-# data['Datetime'] = pd.to_datetime(data['Date'] + ' ' + data['Time'])
-
-# # Set the datetime column as the index
-# data.set_index('Datetime', inplace=True)
-
-# # Drop the original Date and Time columns
-# data.drop(columns=['Date', 'Time'], inplace=True)
-
-# # Resample the data to a per-minute frequency, summing the number of requests in each minute
-# data_resampled = data.resample('min').sum().fillna(0)
-
-
-# # Create features for the model
-# data_resampled['Hour'] = data_resampled.index.hour
-# data_resampled['Minute'] = data_resampled.index.minute
-# data_resampled['DayOfWeek'] = data_resampled.index.dayofweek
-
-
-
-# # Split the data into training and testing sets
-# from sklearn.model_selection import train_test_split
-
-# X = data_resampled[['Hour', 'Minute', 'DayOfWeek']]
-# y = data_resampled['Number of Requests']
-
-# X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-
-
-# # Train a predictive model 
-# from sklearn.ensemble import RandomForestRegressor
-
-# model = RandomForestRegressor(n_estimators=100, random_state=42)
-# model.fit(X_train, y_train)
-
-# # Make predictions
-# predictions = model.predict(X_test)
-
-# # Evaluate the model
-# from sklearn.metrics import mean_squared_error
-
-# mse = mean_squared_error(y_test, predictions)
-# print(f'Mean Squared Error: {mse}')
-
-
-
-
-
-
+# Example usage:
+average_predicted_traffic = predict_traffic_average("../data/synthetic_traffic_data.csv")
+print(f"Average Predicted Number of Requests for the next 10 minutes: {average_predicted_traffic}")
 
