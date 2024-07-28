@@ -2,4 +2,25 @@ docker exec -it desktop-kafka-1 /usr/bin/kafka-topics --create --topic registrat
 
 
 
-docker run -d -p 3003:3000 --name web-app-3 webopti-1
+docker run -d -p 3003:3000 --name web-app-3 webopti
+
+docker network create my-network
+
+docker run -d --name mongodb --network my-network mongo
+e47281a3f2609f3873f4332ed49dd6fb689818d760a5ded4014dc58c3f482cd8
+
+docker run -d -p 3001:3000 --name web-app-1 --network my-network webopti
+docker run -d -p 3002:3000 --name web-app-2 --network my-network webopti
+docker run -d -p 3003:3000 --name web-app-3 --network my-network webopti
+
+docker run -d -p 3003:3000 --name web-app-3 --network my-network -e MONGODB_URI=mongodb://my-mongodb:27017/Webopti webopti
+
+
+kafka-topics.sh --bootstrap-server localhost:9092 --create --topic registration-topic --partitions 1 --replication-factor 1
+
+kafka-console-consumer --bootstrap-server localhost:9092 --topic registration-topic --group registration-group --from-beginning
+
+
+
+
+

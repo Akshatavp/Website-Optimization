@@ -1,9 +1,11 @@
 const mongoose = require("mongoose");
 
 const dataSchema = new mongoose.Schema({
-  data: String,
+  data: {
+    type: String,
+  },
 });
 
-const DataModel = mongoose.model("data", dataSchema);
+const DataModel = mongoose.model("DataModel", dataSchema);
 
 module.exports = DataModel;

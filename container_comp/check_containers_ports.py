@@ -69,8 +69,8 @@ def monitor_ports_and_manage_containers(host, ports, container_ids, image_name, 
 if __name__ == "__main__":
     host = "127.0.0.1"
     ports = [3001, 3002, 3003]
-    container_ids = ["54518e8108cd", "c0f413718a93", "40fc34ff1732"]
-    image_name = "webopti-1"
+    container_ids = ["1b2ea827e0f9", "86bc84222029", "d140caeb2b76"]
+    image_name = "webopti"
 
     while True:
         desired_count = predict_traffic_average("../data/synthetic_traffic_data.csv")
